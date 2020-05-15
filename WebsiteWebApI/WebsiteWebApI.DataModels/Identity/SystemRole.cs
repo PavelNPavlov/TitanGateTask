@@ -5,7 +5,7 @@ using System.Text;
 
 namespace WebsiteWebApI.DataModels.Identity
 {
-    public class SystemUser : IdentityUser<Guid>
+    public class SystemRole : IdentityRole<Guid>
     {
     }
 }

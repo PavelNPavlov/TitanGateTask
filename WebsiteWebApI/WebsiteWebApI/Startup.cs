@@ -12,6 +12,7 @@ using WebsiteWebApI.Data;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using WebsiteWebApI.DataModels.Identity;
 
 namespace WebsiteWebApI
 {
@@ -29,10 +30,13 @@ namespace WebsiteWebApI
         {
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
-                    Configuration.GetConnectionString("DefaultConnection")));
+                    Configuration.GetConnectionString("DefaultConnection"),
+                    x=>x.MigrationsAssembly("WebsiteWebApI.Data")));
 
-            services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+            services.AddDefaultIdentity<SystemUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
+
+
             services.AddRazorPages();
         }
 
@@ -59,10 +63,25 @@ namespace WebsiteWebApI
             app.UseAuthentication();
             app.UseAuthorization();
 
+
+
+            UpdateDatabase(app);
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapRazorPages();
             });
+        }
+
+        private static void UpdateDatabase(IApplicationBuilder app)
+        {
+            using (var serviceScope = app.ApplicationServices.CreateScope())
+            {
+                using (var dbContext = serviceScope.ServiceProvider.GetService<ApplicationDbContext>())
+                {
+                    dbContext.Database.Migrate();
+                }
+            }
         }
     }
 }
