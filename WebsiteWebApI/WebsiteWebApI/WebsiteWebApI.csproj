@@ -13,4 +13,12 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.4" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\WebsiteWebApI.BLServices\WebsiteWebApI.BLServices.csproj" />
+    <ProjectReference Include="..\WebsiteWebApI.DataModels\WebsiteWebApI.DataModels.csproj" />
+    <ProjectReference Include="..\WebsiteWebApI.DataServices\WebsiteWebApI.DataServices.csproj" />
+    <ProjectReference Include="..\WebsiteWebApI.Data\WebsiteWebApI.Data.csproj" />
+    <ProjectReference Include="..\WebsiteWebApI.Infrastructure\WebsiteWebApI.Infrastructure.csproj" />
+  </ItemGroup>
+
 </Project>
