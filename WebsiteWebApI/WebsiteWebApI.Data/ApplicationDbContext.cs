@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using WebsiteWebApI.DataModels;
 using WebsiteWebApI.DataModels.BaseModels;
 using WebsiteWebApI.DataModels.Identity;
 
@@ -17,6 +18,27 @@ namespace WebsiteWebApI.Data
         {
         }
 
+        public DbSet<Website> Websites { get; set; }
+
+        public DbSet<WebsiteCategory> WebsiteCategories { get; set; }
+
+        public DbSet<Url> Urls { get; set; }
+
+        public DbSet<File> Files { get; set; }
+
+        public DbSet<FileProvider> FileProviders { get; set; }
+
+        public DbSet<FileBlob> FileBlobs { get; set; }
+
+
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            base.OnModelCreating(builder);
+
+            builder.Entity<FileBlob>()
+                .HasIndex(x => new { x.FileId });
+
+        }
 
         public override int SaveChanges()
         {

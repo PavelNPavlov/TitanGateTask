@@ -124,6 +124,108 @@ namespace WebsiteWebApI.Data.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
+            modelBuilder.Entity("WebsiteWebApI.DataModels.File", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("DateCreated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("DateModified")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("FileExtension")
+                        .HasColumnType("nvarchar(20)")
+                        .HasMaxLength(20);
+
+                    b.Property<string>("FileName")
+                        .HasColumnType("nvarchar(200)")
+                        .HasMaxLength(200);
+
+                    b.Property<Guid>("FileProviderId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("FileType")
+                        .HasColumnType("nvarchar(20)")
+                        .HasMaxLength(20);
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(200)")
+                        .HasMaxLength(200);
+
+                    b.Property<Guid>("WebsiteId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FileProviderId");
+
+                    b.HasIndex("WebsiteId");
+
+                    b.ToTable("Files");
+                });
+
+            modelBuilder.Entity("WebsiteWebApI.DataModels.FileBlob", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<byte[]>("Data")
+                        .HasColumnType("varbinary(max)");
+
+                    b.Property<DateTime>("DateCreated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("DateModified")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("FileId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FileId");
+
+                    b.ToTable("FileBlobs");
+                });
+
+            modelBuilder.Entity("WebsiteWebApI.DataModels.FileProvider", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("DateCreated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("DateModified")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ImplementationServiceName")
+                        .HasColumnType("nvarchar(200)")
+                        .HasMaxLength(200);
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(200)")
+                        .HasMaxLength(200);
+
+                    b.HasKey("Id");
+
+                    b.ToTable("FileProviders");
+                });
+
             modelBuilder.Entity("WebsiteWebApI.DataModels.Identity.SystemRole", b =>
                 {
                     b.Property<Guid>("Id")
@@ -218,6 +320,97 @@ namespace WebsiteWebApI.Data.Migrations
                     b.ToTable("AspNetUsers");
                 });
 
+            modelBuilder.Entity("WebsiteWebApI.DataModels.Url", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("DateCreated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("DateModified")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(20)")
+                        .HasMaxLength(20);
+
+                    b.Property<string>("UrlPath")
+                        .HasColumnType("nvarchar(400)")
+                        .HasMaxLength(400);
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Urls");
+                });
+
+            modelBuilder.Entity("WebsiteWebApI.DataModels.Website", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("DateCreated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("DateModified")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(200)")
+                        .HasMaxLength(200);
+
+                    b.Property<Guid>("SystemUserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("UrlId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("WebsiteCategoryId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SystemUserId");
+
+                    b.HasIndex("UrlId");
+
+                    b.HasIndex("WebsiteCategoryId");
+
+                    b.ToTable("Websites");
+                });
+
+            modelBuilder.Entity("WebsiteWebApI.DataModels.WebsiteCategory", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("DateCreated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("DateModified")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(200)")
+                        .HasMaxLength(200);
+
+                    b.HasKey("Id");
+
+                    b.ToTable("WebsiteCategories");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
                 {
                     b.HasOne("WebsiteWebApI.DataModels.Identity.SystemRole", null)
@@ -265,6 +458,42 @@ namespace WebsiteWebApI.Data.Migrations
                     b.HasOne("WebsiteWebApI.DataModels.Identity.SystemUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("WebsiteWebApI.DataModels.File", b =>
+                {
+                    b.HasOne("WebsiteWebApI.DataModels.FileProvider", "FileProvider")
+                        .WithMany()
+                        .HasForeignKey("FileProviderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("WebsiteWebApI.DataModels.Website", "Website")
+                        .WithMany("Files")
+                        .HasForeignKey("WebsiteId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("WebsiteWebApI.DataModels.Website", b =>
+                {
+                    b.HasOne("WebsiteWebApI.DataModels.Identity.SystemUser", "SystemUser")
+                        .WithMany("Websites")
+                        .HasForeignKey("SystemUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("WebsiteWebApI.DataModels.Url", "Url")
+                        .WithMany()
+                        .HasForeignKey("UrlId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("WebsiteWebApI.DataModels.WebsiteCategory", "WebsiteCategory")
+                        .WithMany("Websites")
+                        .HasForeignKey("WebsiteCategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

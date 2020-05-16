@@ -6,6 +6,12 @@ namespace WebsiteWebApI.DataModels.BaseModels
 {
     public abstract class BaseDbModel
     {
+
+        public BaseDbModel()
+        {
+            this.Id = Guid.NewGuid();
+        }
+
         public Guid Id { get; set; }
 
         public DateTime DateCreated { get; set; }

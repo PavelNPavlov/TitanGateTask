@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace WebsiteWebApI.Data.Migrations
 {
-    public partial class CustomIdentity : Migration
+    public partial class BaseDbStructure : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -44,6 +44,69 @@ namespace WebsiteWebApI.Data.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "FileBlobs",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    DateCreated = table.Column<DateTime>(nullable: false),
+                    DateModified = table.Column<DateTime>(nullable: false),
+                    IsDeleted = table.Column<bool>(nullable: false),
+                    FileId = table.Column<Guid>(nullable: false),
+                    Data = table.Column<byte[]>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_FileBlobs", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "FileProviders",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    DateCreated = table.Column<DateTime>(nullable: false),
+                    DateModified = table.Column<DateTime>(nullable: false),
+                    IsDeleted = table.Column<bool>(nullable: false),
+                    Name = table.Column<string>(maxLength: 200, nullable: true),
+                    ImplementationServiceName = table.Column<string>(maxLength: 200, nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_FileProviders", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Urls",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    DateCreated = table.Column<DateTime>(nullable: false),
+                    DateModified = table.Column<DateTime>(nullable: false),
+                    IsDeleted = table.Column<bool>(nullable: false),
+                    Name = table.Column<string>(maxLength: 20, nullable: true),
+                    UrlPath = table.Column<string>(maxLength: 400, nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Urls", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "WebsiteCategories",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    DateCreated = table.Column<DateTime>(nullable: false),
+                    DateModified = table.Column<DateTime>(nullable: false),
+                    IsDeleted = table.Column<bool>(nullable: false),
+                    Name = table.Column<string>(maxLength: 200, nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_WebsiteCategories", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -152,6 +215,74 @@ namespace WebsiteWebApI.Data.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Websites",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    DateCreated = table.Column<DateTime>(nullable: false),
+                    DateModified = table.Column<DateTime>(nullable: false),
+                    IsDeleted = table.Column<bool>(nullable: false),
+                    Name = table.Column<string>(maxLength: 200, nullable: true),
+                    WebsiteCategoryId = table.Column<Guid>(nullable: false),
+                    UrlId = table.Column<Guid>(nullable: false),
+                    SystemUserId = table.Column<Guid>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Websites", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Websites_AspNetUsers_SystemUserId",
+                        column: x => x.SystemUserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Websites_Urls_UrlId",
+                        column: x => x.UrlId,
+                        principalTable: "Urls",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Websites_WebsiteCategories_WebsiteCategoryId",
+                        column: x => x.WebsiteCategoryId,
+                        principalTable: "WebsiteCategories",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Files",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    DateCreated = table.Column<DateTime>(nullable: false),
+                    DateModified = table.Column<DateTime>(nullable: false),
+                    IsDeleted = table.Column<bool>(nullable: false),
+                    Name = table.Column<string>(maxLength: 200, nullable: true),
+                    FileName = table.Column<string>(maxLength: 200, nullable: true),
+                    FileExtension = table.Column<string>(maxLength: 20, nullable: true),
+                    FileType = table.Column<string>(maxLength: 20, nullable: true),
+                    FileProviderId = table.Column<Guid>(nullable: false),
+                    WebsiteId = table.Column<Guid>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Files", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Files_FileProviders_FileProviderId",
+                        column: x => x.FileProviderId,
+                        principalTable: "FileProviders",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Files_Websites_WebsiteId",
+                        column: x => x.WebsiteId,
+                        principalTable: "Websites",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
@@ -190,6 +321,36 @@ namespace WebsiteWebApI.Data.Migrations
                 column: "NormalizedUserName",
                 unique: true,
                 filter: "[NormalizedUserName] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_FileBlobs_FileId",
+                table: "FileBlobs",
+                column: "FileId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Files_FileProviderId",
+                table: "Files",
+                column: "FileProviderId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Files_WebsiteId",
+                table: "Files",
+                column: "WebsiteId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Websites_SystemUserId",
+                table: "Websites",
+                column: "SystemUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Websites_UrlId",
+                table: "Websites",
+                column: "UrlId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Websites_WebsiteCategoryId",
+                table: "Websites",
+                column: "WebsiteCategoryId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -210,10 +371,28 @@ namespace WebsiteWebApI.Data.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "FileBlobs");
+
+            migrationBuilder.DropTable(
+                name: "Files");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
+                name: "FileProviders");
+
+            migrationBuilder.DropTable(
+                name: "Websites");
+
+            migrationBuilder.DropTable(
                 name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "Urls");
+
+            migrationBuilder.DropTable(
+                name: "WebsiteCategories");
         }
     }
 }
