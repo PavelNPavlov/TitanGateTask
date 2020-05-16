@@ -36,6 +36,7 @@ namespace WebsiteWebApI
             services.AddDefaultIdentity<SystemUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
+            services.AddDataServices();
 
             services.AddRazorPages();
         }
