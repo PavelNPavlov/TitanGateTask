@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using WebsiteWebApI.DataModels.BaseModels;
 using WebsiteWebApI.DataModels.Identity;
 
 namespace WebsiteWebApI.Data
@@ -12,6 +15,36 @@ namespace WebsiteWebApI.Data
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
+        }
+
+
+        public override int SaveChanges()
+        {
+            this.UpdateSoftDeleteStatuses();
+            return base.SaveChanges();
+        }
+
+        public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default)
+        {
+            this.UpdateSoftDeleteStatuses();
+            return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
+        }
+
+        private void UpdateSoftDeleteStatuses()
+        {
+            foreach (var entry in ChangeTracker.Entries())
+            {
+                switch (entry.State)
+                {
+                    case EntityState.Added:
+                        entry.CurrentValues[nameof(BaseDbModel.IsDeleted)] = false;
+                        break;
+                    case EntityState.Deleted:
+                        entry.State = EntityState.Modified;
+                        entry.CurrentValues[nameof(BaseDbModel.IsDeleted)] = true;
+                        break;
+                }
+            }
         }
     }
 }
