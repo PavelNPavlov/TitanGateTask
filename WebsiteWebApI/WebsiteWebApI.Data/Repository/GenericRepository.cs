@@ -6,11 +6,12 @@ using System.Reflection;
 using System.Text;
 using WebsiteWebApI.Data.Repository.Contracts;
 using WebsiteWebApI.DataModels.BaseModels;
+using WebsiteWebApI.Infrastructure;
 
 namespace WebsiteWebApI.Data.Repository
 {
     public class GenericRepository<TDb, TEntity> : IDisposable, IGenericRepository<TDb, TEntity>
-        where TDb : DbContext
+        where TDb : ApplicationDbContext
         where TEntity : BaseDbModel, new()
     {
         internal TDb context;
@@ -46,6 +47,9 @@ namespace WebsiteWebApI.Data.Repository
 
         public virtual void Create(TEntity entity)
         {
+            entity.DateCreated = UtilityConstants.Now;
+            entity.DateModified = UtilityConstants.Now;
+
             dbSet.Add(entity);
         }
 
@@ -61,24 +65,30 @@ namespace WebsiteWebApI.Data.Repository
             {
                 dbSet.Attach(entityToDelete);
             }
+            entityToDelete.DateModified = UtilityConstants.Now;
             dbSet.Remove(entityToDelete);
         }
 
         public virtual void Edit(TEntity entityToUpdate)
         {
+            entityToUpdate.DateModified = UtilityConstants.Now;
             dbSet.Attach(entityToUpdate);
-            context.Entry(entityToUpdate).State = EntityState.Modified;
+            var t = context.Entry(entityToUpdate);
+            context.SetState(entityToUpdate, EntityState.Modified);
             foreach (var item in this.Properties)
             {
                 var value = item.GetValue(entityToUpdate);
                 if (value != null)
                 {
-                    context.Entry(value).State = EntityState.Modified;
+                    context.SetState(value, EntityState.Modified);
+                    //context.Entry(value).State = EntityState.Modified;
                 }
             }
 
 
         }
+       
+
 
         public virtual void EditComplex(TEntity entityToUpdate)
         {
@@ -102,10 +112,18 @@ namespace WebsiteWebApI.Data.Repository
         {
             TEntity entryObj = new TEntity();
             var entry = context.Entry<TEntity>(entryObj);
-            //var entry = context.Entry(entry);
-            string keyName = entry.Metadata.FindPrimaryKey()
+            string keyName;
+            try
+            {
+                keyName = entry.Metadata.FindPrimaryKey()
                          .Properties
                          .Select(p => p.Name).FirstOrDefault();
+            }
+            catch
+            {
+                keyName = "Id";
+            }
+            
             return keyName;
         }
 

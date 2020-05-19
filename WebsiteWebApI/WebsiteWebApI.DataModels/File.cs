@@ -24,9 +24,9 @@ namespace WebsiteWebApI.DataModels
 
         public Guid FileProviderId { get; set; }
 
-        public Guid WebsiteId { get; set; }
+        public Guid? WebsiteId { get; set; }
 
-        public virtual Website Website { get; set; }
+        public virtual WebsiteEntity Website { get; set; }
 
         public virtual FileProvider FileProvider { get; set; }
     }

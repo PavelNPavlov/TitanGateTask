@@ -7,15 +7,15 @@ namespace WebsiteWebApI.DataModels.Identity
 {
     public class SystemUser : IdentityUser<Guid>
     {
-        private ICollection<Website> websites;
+        private ICollection<WebsiteEntity> websites;
 
         public SystemUser()
         {
-            this.websites = new HashSet<Website>();
+            this.websites = new HashSet<WebsiteEntity>();
         }
 
-
-        public virtual ICollection<Website> Websites
+        public bool IsDeleted { get; set; }
+        public virtual ICollection<WebsiteEntity> Websites
         {
             get { return this.websites; }
             set { this.websites = value; }

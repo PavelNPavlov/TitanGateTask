@@ -7,5 +7,6 @@ namespace WebsiteWebApI.DataModels.Identity
 {
     public class SystemRole : IdentityRole<Guid>
     {
+        public bool IsDeleted { get; set; }
     }
 }

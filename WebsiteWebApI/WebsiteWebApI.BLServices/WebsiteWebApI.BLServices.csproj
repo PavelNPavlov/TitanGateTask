@@ -4,4 +4,15 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="9.0.0" />
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="7.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.ViewFeatures" Version="2.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\WebsiteWebApI.DataServices\WebsiteWebApI.DataServices.csproj" />
+    <ProjectReference Include="..\WebsiteWebApI.Infrastructure\WebsiteWebApI.Infrastructure.csproj" />
+  </ItemGroup>
+
 </Project>

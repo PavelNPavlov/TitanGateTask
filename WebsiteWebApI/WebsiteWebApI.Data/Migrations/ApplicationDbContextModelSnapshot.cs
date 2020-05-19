@@ -68,12 +68,10 @@ namespace WebsiteWebApI.Data.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<System.Guid>", b =>
                 {
                     b.Property<string>("LoginProvider")
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ProviderKey")
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ProviderDisplayName")
                         .HasColumnType("nvarchar(max)");
@@ -109,12 +107,10 @@ namespace WebsiteWebApI.Data.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("LoginProvider")
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Value")
                         .HasColumnType("nvarchar(max)");
@@ -158,7 +154,7 @@ namespace WebsiteWebApI.Data.Migrations
                         .HasColumnType("nvarchar(200)")
                         .HasMaxLength(200);
 
-                    b.Property<Guid>("WebsiteId")
+                    b.Property<Guid?>("WebsiteId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
@@ -236,6 +232,9 @@ namespace WebsiteWebApI.Data.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(256)")
                         .HasMaxLength(256);
@@ -272,6 +271,9 @@ namespace WebsiteWebApI.Data.Migrations
                         .HasMaxLength(256);
 
                     b.Property<bool>("EmailConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
                     b.Property<bool>("LockoutEnabled")
@@ -348,7 +350,31 @@ namespace WebsiteWebApI.Data.Migrations
                     b.ToTable("Urls");
                 });
 
-            modelBuilder.Entity("WebsiteWebApI.DataModels.Website", b =>
+            modelBuilder.Entity("WebsiteWebApI.DataModels.WebsiteCategory", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("DateCreated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("DateModified")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(200)")
+                        .HasMaxLength(200);
+
+                    b.HasKey("Id");
+
+                    b.ToTable("WebsiteCategories");
+                });
+
+            modelBuilder.Entity("WebsiteWebApI.DataModels.WebsiteEntity", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -385,30 +411,6 @@ namespace WebsiteWebApI.Data.Migrations
                     b.HasIndex("WebsiteCategoryId");
 
                     b.ToTable("Websites");
-                });
-
-            modelBuilder.Entity("WebsiteWebApI.DataModels.WebsiteCategory", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("DateCreated")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("DateModified")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(200)")
-                        .HasMaxLength(200);
-
-                    b.HasKey("Id");
-
-                    b.ToTable("WebsiteCategories");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
@@ -470,14 +472,12 @@ namespace WebsiteWebApI.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("WebsiteWebApI.DataModels.Website", "Website")
+                    b.HasOne("WebsiteWebApI.DataModels.WebsiteEntity", "Website")
                         .WithMany("Files")
-                        .HasForeignKey("WebsiteId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("WebsiteId");
                 });
 
-            modelBuilder.Entity("WebsiteWebApI.DataModels.Website", b =>
+            modelBuilder.Entity("WebsiteWebApI.DataModels.WebsiteEntity", b =>
                 {
                     b.HasOne("WebsiteWebApI.DataModels.Identity.SystemUser", "SystemUser")
                         .WithMany("Websites")

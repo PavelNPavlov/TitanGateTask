@@ -8,3 +8,60 @@
     <h1 class="display-4">Welcome</h1>
     <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
 </div>
+
+<div>
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">Name</th>
+                <th scope="col">Url</th>
+                <th scope="col">Category</th>
+                <th scope="col">Owner</th>
+                <th scope="col">Image</th>
+                <th scope="col">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in this.Model.Websites)
+            {
+                <tr>
+                    <th scope="row">@item.Name</th>
+                    <td>@item.Url</td>
+                    <td>@item.CategoryName</td>
+                    <td>@item.Owner</td>
+                    <td><img style="height:100px; width:100px" src="@item.SnapshotUrl" /></td>
+                    <td><a class="btn btn-primary" href="/WebsiteEdit/@item.Id">Edit</a><a class="delete btn btn-danger" href="/Website/DeleteWebsite/@item.Id">Delete</a></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@section Scripts{
+<script>
+    $(document).ready(function () {
+
+        $(".delete").on("click", function (e) {
+            e.preventDefault();
+            let url = $(this).attr("href");
+            $.ajax({
+                type: "Get",
+                url: url,
+                success: function (data) {
+                    console.log(data);
+                    window.location.reload();
+                },
+                error: function (data) {
+                    console.log(data)
+                }
+            });
+        })
+
+       
+
+
+    });
+</script>
+
+
+}

@@ -1,0 +1,29 @@
+﻿@page "/{*url}"
+@model WebsiteWebApI.Pages.BaseWebsiteModel
+@{
+    ViewData["Title"] = "BaseWebsite";
+}
+
+@if (this.Model.WebsiteData == null)
+{
+    <h1>Site not found</h1>
+}
+else
+{
+    @if (!this.HttpContext.User.Identity.IsAuthenticated ||this.HttpContext.User.Identity.Name != this.Model.WebsiteData.Owner)
+    {
+        <h1>You do not have access to this website</h1>
+    }
+    else
+    {
+        <div>
+            <div class="text-center"><h1>@this.Model.WebsiteData.Name</h1></div>
+            <div class="text-center"><h2>@this.Model.WebsiteData.CategoryName</h2></div>
+            <div class="text-center"><img src="@this.Model.WebsiteData.SnapshotUrl" style="width:500px; height:500px"/></div>
+        </div>
+
+    }
+}
+
+
+

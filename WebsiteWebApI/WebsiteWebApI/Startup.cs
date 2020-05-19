@@ -13,6 +13,12 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using WebsiteWebApI.DataModels.Identity;
+using WebsiteWebApI.DataServices;
+using AutoMapper;
+using WebsiteWebApI.AutoMapper;
+using WebsiteWebApI.BLServices;
+using WebsiteWebApI.Data.Seeder;
+using Microsoft.AspNetCore.Mvc;
 
 namespace WebsiteWebApI
 {
@@ -29,16 +35,36 @@ namespace WebsiteWebApI
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(
+                options
+                .UseLazyLoadingProxies()
+                .UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection"),
                     x=>x.MigrationsAssembly("WebsiteWebApI.Data")));
 
-            services.AddDefaultIdentity<SystemUser>(options => options.SignIn.RequireConfirmedAccount = true)
-                .AddEntityFrameworkStores<ApplicationDbContext>();
+            services.AddIdentity<SystemUser, SystemRole>(options =>
+            {
+                options.SignIn.RequireConfirmedAccount = false;
+                options.Password.RequireDigit = false;
+                options.Password.RequireLowercase = false;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireUppercase = false;
+            })
+            .AddEntityFrameworkStores<ApplicationDbContext>()
+            .AddDefaultTokenProviders();
+
+
+            services.AddDataBaseServices();
 
             services.AddDataServices();
 
+            services.AddBLServices();
+
+            services.AddAutoMapper(typeof(ServerMapperProfile));
+
+            services.AddControllers();
+
             services.AddRazorPages();
+            //services.AddMvc();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -71,6 +97,7 @@ namespace WebsiteWebApI
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapRazorPages();
+                endpoints.MapControllers();
             });
         }
 
@@ -80,7 +107,10 @@ namespace WebsiteWebApI
             {
                 using (var dbContext = serviceScope.ServiceProvider.GetService<ApplicationDbContext>())
                 {
+                    var userManger = serviceScope.ServiceProvider.GetService<UserManager<SystemUser>>();
+                    var roleManager = serviceScope.ServiceProvider.GetService<RoleManager<SystemRole>>();
                     dbContext.Database.Migrate();
+                    DataSeeder.Seed(dbContext, userManger, roleManager);
                 }
             }
         }

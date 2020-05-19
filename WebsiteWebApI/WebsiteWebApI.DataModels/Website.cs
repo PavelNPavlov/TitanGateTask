@@ -9,11 +9,11 @@ using WebsiteWebApI.Infrastructure;
 
 namespace WebsiteWebApI.DataModels
 {
-    public class Website : BaseDbModel
+    public class WebsiteEntity : BaseDbModel
     {
         private ICollection<File> files;
 
-        public Website()
+        public WebsiteEntity()
         {
             this.files = new HashSet<File>();
         }

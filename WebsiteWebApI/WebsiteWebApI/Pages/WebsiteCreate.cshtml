@@ -1,0 +1,133 @@
+﻿@page ""
+@model WebsiteCreateModel
+@{
+    ViewData["Title"] = "Home page";
+}
+
+<div>
+    <div class="row">
+        <form id="create-form" asp-controller="Website" asp-action="Create" method="post" enctype="multipart/form-data" class="col-md-4">
+            <div id="error-msg" asp-validation-summary="All" class="text-danger"></div>
+
+            <div class="form-group">
+                <label asp-for="CreateWebsiteIM.Name" class="control-label"></label>
+                <input asp-for="CreateWebsiteIM.Name" class="form-control" /><br />
+                <span asp-validation-for="CreateWebsiteIM.Name" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="CreateWebsiteIM.URL" class="control-label"></label>
+                <input asp-for="CreateWebsiteIM.URL" class="form-control" /><br />
+                <span asp-validation-for="CreateWebsiteIM.URL" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="CreateWebsiteIM.HomePageSnapshot" class="control-label"></label>
+                <input asp-for="CreateWebsiteIM.HomePageSnapshot" class="form-control" /><br />
+                <span asp-validation-for="CreateWebsiteIM.HomePageSnapshot" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="CreateWebsiteIM.CategoryId" class="control-label"></label>
+                <select asp-for="CreateWebsiteIM.CategoryId" class="form-control">
+                    @foreach (var item in Model.Categories)
+                    {
+                        <option value="@item.Value">@item.Text</option>
+                    }
+                </select>
+                <span asp-validation-for="CreateWebsiteIM.CategoryId" class="text-danger"></span>
+            </div>
+
+
+            <div class="form-group">
+                <label asp-for="CreateWebsiteIM.UserId" class="control-label"></label>
+                <select asp-for="CreateWebsiteIM.UserId" class="form-control">
+                    @foreach (var item in Model.AvailableUsers)
+                    {
+                        <option value="@item.Value">@item.Text</option>
+                    }
+                </select>
+                <span asp-validation-for="CreateWebsiteIM.UserId" class="text-danger"></span>
+            </div>
+            <div class="login-cred">
+                <div class="form-group">
+                    <label asp-for="CreateWebsiteIM.UserName" class="control-label"></label>
+                    <input asp-for="CreateWebsiteIM.UserName" class="form-control" /><br />
+                    <span asp-validation-for="CreateWebsiteIM.UserName" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="CreateWebsiteIM.Password" class="control-label"></label>
+                    <input asp-for="CreateWebsiteIM.Password" class="form-control" /><br />
+                    <span asp-validation-for="CreateWebsiteIM.Password" class="text-danger"></span>
+                </div>
+            </div>
+
+
+
+
+            <button type="submit" class="btn btn-success text-dark">Create</button>
+        </form>
+    </div>
+</div>
+
+@section Scripts{
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+    <script>
+        $(document).ready(function () {
+
+
+            $("#CreateWebsiteIM_UserId").on("change", function () {
+                let that = $(this);
+
+                let value = that.val();
+
+                if (value == "00000000-0000-0000-0000-000000000000") {
+                    console.log("Show");
+                    $(".login-cred").show();
+
+                } else {
+                    $(".login-cred").hide();
+
+                }
+
+                console.log(value);
+            })
+
+            $("#create-form").submit(function (e) {
+                e.preventDefault();
+                let form = $(this);
+                let url = form.attr('action');
+                let data = new FormData();
+
+                data.append("HomePageSnapshot", $("#CreateWebsiteIM_HomePageSnapshot")[0].files[0]);
+                data.append("Name", $("#CreateWebsiteIM_Name").val());
+                data.append("URL", $("#CreateWebsiteIM_URL").val());
+                data.append("CategoryId", $("#CreateWebsiteIM_CategoryId").val());
+                data.append("UserId", $("#CreateWebsiteIM_UserId").val());
+                data.append("Password", $("#CreateWebsiteIM_Password").val());
+                data.append("UserName", $("#CreateWebsiteIM_UserName").val());
+
+                $.ajax({
+                    type: "POST",
+                    url: url,
+                    data: data,
+                    contentType: false,
+                    processData: false,
+                    success: function (data) {
+                        console.log(data);
+                        window.location.href = "/";
+                    },
+                    error: function (data) {
+                        $('#error-msg').html(data.error);
+                    }
+                });
+            });
+
+
+        });
+    </script>
+
+
+}
+
