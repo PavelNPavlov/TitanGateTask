@@ -12,7 +12,6 @@ namespace WebsiteWebApI.DataServices
     {
         public static void AddDataServices(this IServiceCollection services)
         {
-            services.AddScoped<IWebsiteDataService, WebsiteDataServices>();
             services.AddScoped<ICategoryDataService, CategoryDataService>();
         }
     }

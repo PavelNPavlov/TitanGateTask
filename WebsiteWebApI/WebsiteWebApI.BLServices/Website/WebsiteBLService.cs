@@ -69,6 +69,13 @@ namespace WebsiteWebApI.BLServices.Website
             return result;
         }
 
+        public async Task<IList<WebsiteListOM>> GetSites(GetInputModel data)
+        {
+            var result = this.websiteListDataService.GetItems(data.Filters, data.SortModel, data.Page, data.PageSize);
+
+            return result;
+        }
+
         public async Task DeleteSite(Guid id)
         {
             var website = this.websiteDataService.GetItemById(new GetInputModel { Id = id });

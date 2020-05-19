@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using WebsiteWebApI.Data.CrudAPIModels.Input;
 using WebsiteWebApI.Infrastructure.InputModels;
 using WebsiteWebApI.Infrastructure.OutputModels;
 
@@ -22,5 +23,7 @@ namespace WebsiteWebApI.BLServices.Contracts
         Task DeleteSite(Guid id);
 
         Task<WebsiteListOM> GetWebsiteByUrl(string url);
+
+        Task<IList<WebsiteListOM>> GetSites(GetInputModel data);
     }
 }

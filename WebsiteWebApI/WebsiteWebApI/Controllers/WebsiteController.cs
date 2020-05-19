@@ -7,6 +7,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using WebsiteWebApI.BLServices.Contracts;
+using WebsiteWebApI.Data.CrudAPIModels.Input;
 using WebsiteWebApI.Infrastructure.InputModels;
 
 namespace WebsiteWebApI.Controllers
@@ -29,15 +30,31 @@ namespace WebsiteWebApI.Controllers
         [Route("{id}")]
         public async Task<IActionResult> GetWebsite(Guid id)
         {
-            var result = await this.websiteBlService.GetSite(id);
-            return new JsonResult(result);
+            try
+            {
+                var result = await this.websiteBlService.GetSite(id);
+                return new JsonResult(result);
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex);
+            }
+
         }
 
         [Route("{id}")]
         public async Task<IActionResult> DeleteWebsite(Guid id)
         {
-            await this.websiteBlService.DeleteSite(id);
-            return new JsonResult(id);
+            try
+            {
+                await this.websiteBlService.DeleteSite(id);
+                return new JsonResult(id);
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex);
+            }
+            
         }
 
         public async Task<IActionResult> GetWebsiteList([FromQuery]int page, [FromQuery]int pageSize)
@@ -51,10 +68,25 @@ namespace WebsiteWebApI.Controllers
             }
             catch(Exception ex)
             {
-                var s = 4;
+                return BadRequest(ex);
             }
-            
-            return Ok();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> GetWebsiteListWithFilters([FromBody]GetInputModel data)
+        {
+            var user = this.HttpContext.User.Identity.Name;
+            try
+            {
+                var websites = await this.websiteBlService.GetSites(data);
+
+                return new JsonResult(websites);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
+
         }
 
         [HttpPost]
@@ -63,21 +95,31 @@ namespace WebsiteWebApI.Controllers
             try
             {
                 await this.websiteBlService.CreateWebsite(createWebsiteIM);
+
+                return Ok();
             }
             catch(Exception ex)
             {
-                var s = 5;
+                return BadRequest(ex);
             }
             
-            return Ok();
+           
         }
 
         [HttpPost]
         public async Task<IActionResult> Edit([FromForm]EditWebsiteIM input)
         {
-
-            await this.websiteBlService.UpdateWebsite(input);
-            return Ok();
+            try
+            {
+                await this.websiteBlService.UpdateWebsite(input);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
+           
+          
         }
     }
 }
