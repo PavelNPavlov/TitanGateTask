@@ -6,10 +6,18 @@
 
 <div class="text-center">
     <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
 </div>
 
 <div>
+    @if (this.User.Identity.IsAuthenticated)
+    {
+        <a class="btn btn-success" href="/WebsiteCreate">Create</a>
+    }
+    else
+    {
+        <h2>Please Login</h2>
+    }
+
     <table class="table">
         <thead>
             <tr>
@@ -26,7 +34,7 @@
             {
                 <tr>
                     <th scope="row">@item.Name</th>
-                    <td>@item.Url</td>
+                    <td><a href="/@item.Url">@item.Url</a></td>
                     <td>@item.CategoryName</td>
                     <td>@item.Owner</td>
                     <td><img style="height:100px; width:100px" src="@item.SnapshotUrl" /></td>

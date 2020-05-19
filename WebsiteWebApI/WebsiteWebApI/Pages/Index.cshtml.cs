@@ -24,6 +24,8 @@ namespace WebsiteWebApI.Pages
         {
             _logger = logger;
             this.websiteBlService = websiteBlService;
+
+            this.Websites = new List<WebsiteListOM>();
         }
 
         public void OnGet()
